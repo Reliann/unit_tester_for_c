@@ -13,7 +13,7 @@ os.chdir(os.path.dirname(__file__))
 
 
 # Compile the C code
-compile_status = os.system(f"gcc -Wall -Werror -pedantic-errors -lm {c_code_file} -o c_code")
+compile_status = os.system(f"gcc -std=c11 -Wall -Werror -pedantic-errors -lm {c_code_file} -o c_code")
 if compile_status != 0:
     print("Compilation failed")
     exit()
