@@ -1,4 +1,5 @@
 import os
+import sys
 
 # Define the name of the C code file
 c_code_file = "*.c"
@@ -6,6 +7,8 @@ GREEN  = '\33[32m'
 RED = '\033[31m'
 RESET = '\033[0m'
 CYAN = '\033[36m'
+# Windows needs the -g flag, macos does not
+math_lib_flag = sys.platform.startswith('win32') ? '-g' : ''
 # Find the path to the tests directory
 tests_dir = os.path.join(os.path.dirname(__file__), "tests")
 os.chdir(os.path.dirname(__file__))
@@ -13,7 +16,7 @@ os.chdir(os.path.dirname(__file__))
 
 
 # Compile the C code
-compile_status = os.system(f"gcc -std=c11 -Wall -Werror -pedantic-errors -lm {c_code_file} -o c_code")
+compile_status = os.system(f"gcc -std=c99 -Wall -Werror -pedantic-errors -lm {c_code_file} -o c_code")
 if compile_status != 0:
     print("Compilation failed")
     exit()
@@ -33,7 +36,7 @@ for input_file in os.listdir(tests_dir):
         command = f"c_code < {input_path} > {output_path}"
         run_status = os.system(command)
         if run_status != 0:
-            print(f"{test_name} " + RED + "failed"+ RESET+": C code crashed")
+            print(f"{test_name} {RED}failed{RESET}: C code crashed")
             continue
         
         # Compare the expected output and the actual output
@@ -42,12 +45,12 @@ for input_file in os.listdir(tests_dir):
                 expected_output = expected_file.read()
                 actual_output = output_file.read()
                 if expected_output == actual_output:
-                    print(f"{test_name}" + GREEN + " passed"+RESET)
+                    print(f"{test_name}{GREEN} passed{RESET}")
                 else:
-                    print(f"{test_name} " + RED + "failed"+ RESET+": expected {expected_output} but got {actual_output}")
+                    print(f"{test_name} {RED}failed{RESET}: expected {expected_output} but got {actual_output}")
         except FileNotFoundError:
-            print(f"{test_name} " + RED + "failed"+ RESET+": output file not found")
+            print(f"{test_name} {RED}failed{RESET}: output file not found")
         except:
-            print(f"{test_name} " + RED + "failed"+ RESET+": something went wrong")
+            print(f"{test_name} {RED}failed{RESET}: something went wrong")
 
 print(CYAN + "** DONE **" +RESET)
