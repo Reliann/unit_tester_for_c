@@ -8,7 +8,7 @@ RED = '\033[31m'
 RESET = '\033[0m'
 CYAN = '\033[36m'
 # Windows needs the -g flag, macos does not
-math_lib_flag = sys.platform.startswith('win32') ? '-g' : ''
+math_lib_flag = '-g' if sys.platform.startswith('win32') else ''
 # Find the path to the tests directory
 tests_dir = os.path.join(os.path.dirname(__file__), "tests")
 os.chdir(os.path.dirname(__file__))
